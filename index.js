@@ -1,16 +1,15 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+
+const userRoutes = require('./routes/user');
 
 const app = express();
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
 
-app.get('/check1', (req, res) => {
-  res.send('check 1');
-});
+app.use(bodyParser.json());
 
-app.get('/check2', (req, res) => {
-  res.send('check 2');
-});
+app.use('/api/v1', userRoutes);
 
-app.listen(4000);
+app.listen(4000, () => {
+    // eslint-disable-next-line no-console
+    console.log('Server listening on port 4000');
+});
