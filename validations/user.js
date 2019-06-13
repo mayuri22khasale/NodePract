@@ -1,12 +1,17 @@
 const Joi = require('@hapi/joi');
 
 exports.signUpSchema = Joi.object().keys({
-    name: Joi
+    firstname: Joi
         .string()
         .trim()
         .min(3)
         .max(255)
         .required(),
+    lastname: Joi
+        .string()
+        .trim()
+        .min(3)
+        .max(255),
     password: Joi
         .string()
         .trim()
@@ -18,5 +23,9 @@ exports.signUpSchema = Joi.object().keys({
         .lowercase()
         .trim()
         .email({ minDomainSegments: 2 })
+        .required(),
+    mobileNo: Joi
+        .number()
+        .min(10)
         .required(),
 });
