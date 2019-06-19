@@ -53,10 +53,12 @@ exports.login = async (req, res) => {
         try {
             const credentials = validationResult.value;
             const userDetails = await userModel.getUserByEmail(credentials.email);
-            const isEqual = await hashingUtil.compareHash(credentials.password, userDetails.password);
+            const isEqual = await hashingUtil
+                .compareHash(credentials.password, userDetails.password);          
             if (isEqual) {
+                const token = await hashingUtil.generateToken(credentials);
                 res.json({
-                    userDetails,
+                    token,
                 });
             } else {
                 res.status(400).json({

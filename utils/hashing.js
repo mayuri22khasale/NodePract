@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 
+const jwt = require('jsonwebtoken');
+
+const privateKey = '12345';
 const saltRounds = 10;
 
 exports.generateHash = function (input) {
@@ -25,6 +28,19 @@ exports.compareHash = function (input, hash) {
                 reject(err);
             } else {
                 resolve(res);
+            }
+        });
+    }));
+};
+
+exports.generateToken = function (payload) {
+    return new Promise(((resolve, reject) => {
+        jwt.sign(payload, privateKey, (err, token) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            } else {
+                resolve(token);
             }
         });
     }));
