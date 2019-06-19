@@ -29,3 +29,28 @@ exports.signUpSchema = Joi.object().keys({
         .min(10)
         .required(),
 });
+
+exports.loginSchema = Joi.object().keys({
+    password: Joi
+        .string()
+        .trim()
+        .required(),
+    email: Joi
+        .string()
+        .lowercase()
+        .trim()
+        .email({ minDomainSegments: 2 })
+        .required(),
+});
+
+exports.todoListSchema = Joi.object().keys({
+    task: Joi
+        .string()
+        .trim()
+        .min(3)
+        .max(255)
+        .required(),
+    date: Joi
+        .date(),
+
+});

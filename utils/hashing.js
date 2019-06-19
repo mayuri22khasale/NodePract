@@ -19,6 +19,7 @@ exports.generateHash = function (input) {
 exports.compareHash = function (input, hash) {
     return new Promise(((resolve, reject) => {
         bcrypt.compare(input, hash, (err, res) => {
+            // console.log('token---->', token);
             if (err) {
                 console.log(err);
                 reject(err);
