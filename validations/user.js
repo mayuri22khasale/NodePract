@@ -42,15 +42,3 @@ exports.loginSchema = Joi.object().keys({
         .email({ minDomainSegments: 2 })
         .required(),
 });
-
-exports.todoListSchema = Joi.object().keys({
-    task: Joi
-        .string()
-        .trim()
-        .min(3)
-        .max(255)
-        .required(),
-    date: Joi
-        .date(),
-
-});

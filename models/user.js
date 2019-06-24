@@ -26,7 +26,9 @@ exports.getUserByEmail = function (email) {
                 reject(userNotFoundError);
             } else {
                 userSnapShot.forEach((doc) => {
-                    resolve(doc.data());
+                    const user = doc.data();
+                    user.id = doc.id;
+                    resolve(user);
                 });
             }
         } catch (error) {

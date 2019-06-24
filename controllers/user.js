@@ -1,12 +1,8 @@
 const Joi = require('@hapi/joi');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const db = require('../db');
 const userModel = require('../models/user');
 const userValidator = require('../validations/user');
 const hashingUtil = require('../utils/hashing');
 
-const userRef = db.collection('users');
 exports.registeruser = async (req, res) => {
     const validationResult = Joi.validate(req.body, userValidator.signUpSchema);
     if (validationResult.error) {
@@ -54,14 +50,18 @@ exports.login = async (req, res) => {
             const credentials = validationResult.value;
             const userDetails = await userModel.getUserByEmail(credentials.email);
             const isEqual = await hashingUtil
-                .compareHash(credentials.password, userDetails.password);          
+                .compareHash(credentials.password, userDetails.password);
             if (isEqual) {
-                const token = await hashingUtil.generateToken(credentials);
+                const token = await hashingUtil.generateJWT({
+                    userId: userDetails.id,
+                    firstname: userDetails.firstname,
+                    email: userDetails.email,
+                });
                 res.json({
-                    token,
+                    token, userDetails,
                 });
             } else {
-                res.status(400).json({
+                res.status(401).json({
                     message: 'wrong email or password',
                 });
             }
@@ -76,6 +76,13 @@ exports.login = async (req, res) => {
         }
     }
 };
+
+exports.getSomething = (req, res) => {
+    res.json({
+        message: 'Hello World!',
+    });
+};
+
 // exports.loginuser = async (req, res) => {
 //     const validationResult = Joi.validate(req.body, userValidator.signUpSchema);
 //     const userDetails = validationResult.value;
@@ -94,31 +101,31 @@ exports.login = async (req, res) => {
 //     });
 // };
 
-// exports.createTodolist = async (req, res) => {
-//     const task = req.body.task;
-//     console.log('check taaassskk---->', task);
-//     const validationResult = Joi.validate(req.body, userValidator.todoListSchema);
-//     if (validationResult.error) {
-//         res.status(400).json({ message: validationResult.error.details[0].message });
-//     } else {
-//         const taskDetails = validationResult.value;
-//         try {
-//             const savedTask = await userModel.createTodolist(taskDetails.task);
-//             res.status(201).json({
-//                 message: 'Task not found',
-//             });
-//         } catch (error) {
-//             res.status(500).json({
-//                 message: 'Something went wrong',
-//             });
-//         }
-//     }
-// };
+exports.createTodolist = async (req, res) => {
+    const task = req.body.task;
+    console.log('check taaassskk---->', task);
+    const validationResult = Joi.validate(req.body, userValidator.todoListSchema);
+    if (validationResult.error) {
+        res.status(400).json({ message: validationResult.error.details[0].message });
+    } else {
+        const taskDetails = validationResult.value;
+        try {
+            const savedTask = await userModel.createTodolist(taskDetails.task);
+            res.status(201).json({
+                message: 'Task not found',
+            });
+        } catch (error) {
+            res.status(500).json({
+                message: 'Something went wrong',
+            });
+        }
+    }
+};
 
 // exports.createTodolist = (req, res, next) => {
 //     const error = validationResult(req);
 //     if (!error.isEmpty()) {
-//         return res.status(422).json({ message: 'validation failed',error: error.arry() });
+//         return res.status(422).json({ message: 'validation failed', error: error.arry() });
 //     }
 //     const task = req.body.task;
 //     const date = req.body.date;
