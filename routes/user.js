@@ -24,4 +24,7 @@ router.put('/users/:userId/tasks/:taskId', middleware.ensureAuthorizedUser, task
 
 router.get('/users/getTask/:date', taskController.paginateQuery);
 
+router.get('/users/getTodoList', taskController.getTodolist);
+
 module.exports = router;
+

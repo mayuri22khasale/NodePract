@@ -61,6 +61,58 @@ exports.updateTask = async (req, res) => {
     }
 };
 
+exports.getTodolist = async (req, res) => {
+    const date = req.params.date;
+    const task = req.params.task;
+    const page =req.params.page;
+    const pageSze = req.params.pageSze;
+try {
+    const taskDetails = await taskModel.getTask();
+   console.log('taskDetails-->',taskDetails);
+   let allCities = await taskDetails
+              .then(snapshot => {
+                snapshot.forEach(doc => {
+                    const taskD =(doc.id, '=>', doc.data());
+                  console.log('taskD-------->',taskD);
+                resolve(taskD);
+                });
+              })
+    // if (task) {
+    //     const error = new Error('tasssssk not ound');
+    //     error.statusCode = 400;
+    //     throw error;
+    // } else {
+    //     const query = taskRef.where('task', '==', task);
+    //     const userSnapShot = query.get();
+    //     console.log('usersnapshopt----->', userSnapShot);
+    //     if (userSnapShot.empty) {
+    //         const taskNotFoundError = new Error('task not found');
+    //         taskNotFoundError.name = 'TaskNotFoundError';
+    //         res.status(409).json({
+    //             message: 'Task nooooot found',
+    //         });
+    //     } else {
+    //         userSnapShot.forEach((doc,count) => {
+    //             const page = req.query.page || 1;
+    //             const viewPage = 2;
+    //             const pageCount=count;
+    //             if(pageCount<1){
+    //                 skip((page-1) *viewPage);
+    //                 limit(viewPage);
+    //             }
+                res.status(200).json({
+                    message: 'Task found',taskDetails 
+                });
+    //         });
+    //     }
+    // }
+    
+} catch (error) {
+    throw (error);
+
+}
+    
+};
 
 exports.paginateQuery = async (req, res) => {
     const userId = req.userId;
@@ -68,7 +120,8 @@ exports.paginateQuery = async (req, res) => {
     try {
         // const taskDetails = await taskModel.getTaskById(taskId);
         const taskPagination = await taskModel.paginateQuery(date);
-        res.json(taskPagination);
+        res.json({"message":"get task by pagination"},
+            taskPagination);
     } catch (error) {
         if (error.name === 'TaskNotFoundError') {
             res.status(400).json(error);
@@ -77,3 +130,4 @@ exports.paginateQuery = async (req, res) => {
         }
     }
 };
+

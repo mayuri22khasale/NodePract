@@ -170,7 +170,8 @@ exports.createTodolist = async (req, res) => {
 //         }
 //     }
 // };
-// code with pagination
+// endcode with pagination
+// in update api create object check is object null , if null then not allow to update
 
 // exports.getTodolist = function (task) {
 //     return new Promise((async (resolve, reject) => {
